@@ -1,0 +1,34 @@
+package com.example.buenmate.Service.Impl;
+
+import com.example.buenmate.Model.Producto;
+import com.example.buenmate.Repository.ProductoRepository;
+import com.example.buenmate.Service.ProductoService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+public class ProductoServiceImpl implements ProductoService {
+
+    @Autowired
+    private ProductoRepository productoRepository;
+
+    @Override
+    public List<Producto> listarTodos(){
+        return productoRepository.findAll();
+    }
+
+    @Override
+    public Producto guardar(Producto producto){
+        return productoRepository.save(producto);
+    }
+
+    @Override
+    public Producto buscarPorId(Long id){
+        return productoRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void elimiar(Long id){
+        productoRepository.deleteById(id);
+    }
+}
