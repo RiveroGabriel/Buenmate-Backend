@@ -8,6 +8,7 @@ public class BuenmateApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BuenmateApplication.class, args);
+		System.out.println("Aplicacion iniciada");
 	}
 
 }
