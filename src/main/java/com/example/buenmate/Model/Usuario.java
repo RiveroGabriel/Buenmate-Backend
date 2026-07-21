@@ -8,7 +8,7 @@ import lombok.Data;
 @Entity
 @Table(name = "usuarios")
 @Data
-public class Usuarios {
+public class Usuario {
 
 
     @Id
