@@ -114,7 +114,56 @@ public class PedidoServiceImpl implements PedidoService {
 
     }
 
+    private PedidoResponseDTO mapearPedido(Pedido pedido) {
+        PedidoResponseDTO dto = new PedidoResponseDTO();
+        dto.setId(pedido.getId());
+        dto.setFecha(pedido.getFecha());
+        dto.setEstado(pedido.getEstado().name());
+        dto.setTotal(pedido.getTotal());
+        dto.setUsuarioNombre(pedido.getUsuario().getNombre());
+        dto.setUsuarioEmail(pedido.getUsuario().getEmail());
+        dto.setItems(pedido.getItems().stream()
+                .map(this::mapearItem)
+                .collect(Collectors.toList()));
+        return dto;
+    }
 
+    private ItemPedidoResponseDTO mapearItem(ItemPedido item) {
+        ItemPedidoResponseDTO dto = new ItemPedidoResponseDTO();
+        dto.setProductoId(item.getProducto().getId());
+        dto.setProductoNombre(item.getProducto().getNombre());
+        dto.setCantidad(item.getCantidad());
+        dto.setPrecioUnitario(item.getPrecioUnitario());
+        return dto;
+    }
+
+    @Override
+    public List<PedidoResponseDTO> listarPedidos() {
+        return pedidoRepository.findAll()
+                .stream()
+                .map(this::mapearPedido)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PedidoResponseDTO> obtenerPedidosPorEstado(EstadoPedido estado){
+        return pedidoRepository.findByEstado(estado)
+                .stream()
+                .map(this::mapearPedido)
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public PedidoResponseDTO cambiarEstadoPedido(Long pedidoId, EstadoPedido estado) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        pedido.setEstado(estado);
+        Pedido pedidoActualizado = pedidoRepository.save(pedido);
+        return mapearPedido(pedidoActualizado);
+    }
 
 
 }

@@ -49,6 +49,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/categorias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/categorias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/categorias/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/datos-transferencia").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/datos-transferencia").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/admin/pedidos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/admin/pedidos/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -89,7 +96,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:4200"));
 
         // métodos HTTP permitidos
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
 
         // permitimos cualquier header, incluyendo Authorization con el token
         config.setAllowedHeaders(List.of("*"));

@@ -1,5 +1,6 @@
 package com.example.buenmate.authsecurity;
 
+import com.example.buenmate.Model.Usuario;
 import com.example.buenmate.authsecurity.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,38 +40,34 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println("HEADER RECIBIDO: " + autoHeader);
 
         // 2. Si no hay token o no empieza con "Bearer ", dejamos pasar sin autenticar
-        if (autoHeader == null || !autoHeader.startsWith("Bearer")) {
+        if (autoHeader == null || !autoHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+        String token = autoHeader.substring(7);   // 3. Sacamos el token del header (cortamos el "Bearer " del principio)
 
-        // 3. Sacamos el token del header (cortamos el "Bearer " del principio)
-        String token = autoHeader.substring(7);
-
-
-        // 4. Extraemos el username que está guardado adentro del token
-        String username = jwtService.extractUsername(token);
+        String username = jwtService.extractUsername(token);         // 4. Extraemos el username que está guardado adentro del token
 
         // 5. Si hay username y el usuario no está autenticado todavía en esta request
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        // 6. Buscamos el usuario en la BD
-        UserDetails user = userDetailsService.loadUserByUsername(username);
+            UserDetails user = userDetailsService.loadUserByUsername(username); // 6. Buscamos el usuario en la BD
 
-        // 7. Verificamos que el token sea válido y no haya vencido
-        if (jwtService.isTokenValid(token, user)) {
+            System.out.println("USUARIO: " + user.getUsername() + " - ROLES: " + user.getAuthorities());
 
-            // 8. Autenticamos al usuario en Spring Security para esta request
-            var auth = new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities());
-            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth);
 
+            if (jwtService.isTokenValid(token, user)) {    // 7. Verificamos que el token sea válido y no haya vencido
+
+                var auth = new UsernamePasswordAuthenticationToken(  // 8. Autenticamos al usuario en Spring Security para esta request
+                        user, null, user.getAuthorities());
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+            }
         }
 
 
-        // 9. Dejamos seguir el request hacia el controller
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request,response);   // 9. Dejamos seguir el request hacia el controller
 
 
 
