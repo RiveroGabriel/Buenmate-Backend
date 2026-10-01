@@ -8,8 +8,7 @@ import lombok.NonNull;
 // DTO que recibe los datos del login/registro
 public class AuthRequest {
 
-    @NonNull
-    @NotBlank
+
     private String nombre;
 
     @NonNull

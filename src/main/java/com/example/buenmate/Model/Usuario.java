@@ -4,6 +4,8 @@ package com.example.buenmate.Model;
 import com.example.buenmate.Enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name = "usuarios")
 @Data
+@Setter
+@Getter
 public class Usuario implements UserDetails {
 
 
@@ -22,6 +26,8 @@ public class Usuario implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
+    @Setter
+    @Getter
     private String nombre;
 
     @Column(nullable = false, unique = true)
@@ -60,5 +66,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() { return true; }
+
 
 }

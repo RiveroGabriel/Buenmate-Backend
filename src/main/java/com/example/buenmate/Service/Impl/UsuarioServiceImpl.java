@@ -19,6 +19,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario registrar(Usuario usuario) {
+        System.out.println(usuario.getNombre() + " NOMBREREEE");
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         usuario.setRol(Rol.USER); // asigno el rol, no lo leo
         return usuarioRepository.save(usuario);

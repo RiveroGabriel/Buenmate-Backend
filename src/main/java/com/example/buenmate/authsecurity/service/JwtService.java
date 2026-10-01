@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +27,28 @@ public class JwtService {
     private Long expirationTime;
 
     public String generateToken(UserDetails user){
+    String rol = user.getAuthorities().stream()
+            .findFirst() // encuentra el primero
+            .map(GrantedAuthority::getAuthority) // obtiene el nombre del rol
+            .orElse("USER");
+
+    if (rol.startsWith("ROLE_")){
+        rol = rol.substring(5); // elimina "ROLE_"
+    }
+
         return Jwts.builder()
-                .subject(user.getUsername()) // el "subject" del token es el username del usuario
-                .issuedAt(new Date()) // fecha de emisión del token
-                .expiration(new Date(System.currentTimeMillis() + expirationTime )) // fecha de expiración del token (ahora + tiempo definido)
-                .signWith(getSigningKey()) // firma el token con la clave secreta
+                .setSubject(user.getUsername()) // el subject es el username
+                .claim("rol", rol) // agregamos el rol como claim
+                .setIssuedAt(new Date()) // fecha de emisión
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // fecha de vencimiento
+                .signWith(getSigningKey()) // firma con la clave secreta
                 .compact(); // genera el token en formato String
     }
 
+
     //Convierte la clave secrea en un objeto que puede usar el algoritmo HMAC
     private SecretKey getSigningKey() {
-        byte [] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte [] keyBytes = Decoders.BASE64.decode(secretKey); // decodifica la clave secreta de Base64
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

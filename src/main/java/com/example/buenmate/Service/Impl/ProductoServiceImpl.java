@@ -21,16 +21,24 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public Producto guardar(Producto producto){
+        producto.setId(null); // Asegurarse de que el ID sea nulo para crear un nuevo producto
+        return productoRepository.save(producto);
+    }
+
+    @Override
+    public Producto actualizar(Producto producto) {
         return productoRepository.save(producto);
     }
 
     @Override
     public Producto buscarPorId(Long id){
+
         return productoRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void elimiar(Long id){
-        productoRepository.deleteById(id);
+    public void eliminar(Long id) {
+      productoRepository.deleteById(id);
     }
-}
+
+    }

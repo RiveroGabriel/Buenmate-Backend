@@ -42,9 +42,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // estas rutas son públicas, no necesitan token
                         .requestMatchers("/api/v1/auth/**").permitAll() //cualquier otra ruta necesita token válido
+
+                        .requestMatchers(HttpMethod.GET, "/api/productos").permitAll() //
+
                         .requestMatchers(HttpMethod.POST,"/api/productos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/productos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/productos/**").hasRole("ADMIN")
+
 
                         .requestMatchers(HttpMethod.POST,"/api/categorias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/categorias/**").hasRole("ADMIN")
