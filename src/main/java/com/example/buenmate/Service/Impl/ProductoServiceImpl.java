@@ -20,6 +20,11 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    public List<Producto> listarActivos() {
+        return productoRepository.findByActivoTrue();
+    }
+
+    @Override
     public Producto guardar(Producto producto){
         producto.setId(null); // Asegurarse de que el ID sea nulo para crear un nuevo producto
         return productoRepository.save(producto);

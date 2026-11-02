@@ -2,6 +2,7 @@ package com.example.buenmate.Service;
 
 import com.example.buenmate.Enums.EstadoPedido;
 import com.example.buenmate.Model.Pedido;
+import com.example.buenmate.Model.Producto;
 import com.example.buenmate.dto.PedidoRequest;
 import com.example.buenmate.dto.PedidoResponseDTO;
 
@@ -16,4 +17,7 @@ public interface PedidoService {
     List<PedidoResponseDTO> obtenerPedidosPorEstado(EstadoPedido estado);
 
    PedidoResponseDTO cambiarEstadoPedido(Long PedidoId, EstadoPedido nuevoEstado);
- }
+
+   List<PedidoResponseDTO> obtenerPedidosPorUsuario(Long usuarioId);
+
+}

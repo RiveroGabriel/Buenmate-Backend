@@ -1,5 +1,7 @@
 package com.example.buenmate.Service.Impl;
 
+
+import org.springframework.transaction.annotation.Transactional;
 import com.example.buenmate.Enums.EstadoPedido;
 import com.example.buenmate.Model.ItemPedido;
 import com.example.buenmate.Model.Pedido;
@@ -33,6 +35,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+
+    // Si falla cualquier parte, también se revierten los cambios de stock.
+    @Transactional
     @Override
     public PedidoResponseDTO crearPedido(Long usuarioId, PedidoRequest pedidoRequest) {
         // 1. Buscamos al usuario que está comprando
@@ -165,6 +170,14 @@ public class PedidoServiceImpl implements PedidoService {
         return mapearPedido(pedidoActualizado);
     }
 
+
+    @Override
+    public List<PedidoResponseDTO> obtenerPedidosPorUsuario(Long usuarioId) {
+        return pedidoRepository.findByUsuarioId(usuarioId) // busca los pedidos por el ID del usuario
+                .stream() // convierte la lista de pedidos en un stream
+                .map(this::mapearPedido) // mapea cada pedido a un PedidoResponseDTO
+                .collect(Collectors.toList()); // y finalmente lo convierte de nuevo en una lista
+    }
 
 }
 
